@@ -73,16 +73,17 @@ namespace JsonLight
       JArray arr = new JArray ();
       bool comma = true;
       index ++;
+      simbol ++;
 
       for (; index<content.Length; index++, simbol++) {
         char c = content [index];
         if (']' == c) {
-          break;
+          return arr;
         }
         if (' ' == c || '\n' == c || '\t' == c) {
           if ('\n' == c) {
             line++;
-            simbol = 0;
+            simbol = -1;
           }
           continue;
         } else if (!comma) {
@@ -92,19 +93,35 @@ namespace JsonLight
           comma = true;
         } else {
           if ('"' == c || '\'' == c) {
-            index++;
-            arr.Add (JString.ValueOf (JUtils.DecodeEscapeString (content, ref index, c)));
+            // Decode string value "String" or 'String'
+            try {
+              var pIndex = index;
+              index++;
+              arr.Add (JString.ValueOf (JUtils.DecodeEscapeString (content, ref index, c)));
+              simbol += index - pIndex;
+            } catch (FormatException e) {
+              throw new ExceptionSyntaxError (line, simbol);
+            }
           } else if ('[' == c) {
+            // Parse Array
             arr.Add (JArray.DecodeArray (content, ref index, ref line, ref simbol));
           } else if ('{' == c) {
+            // Parse Dictionary
             arr.Add (JObject.DecodeObject (content, ref index, ref line, ref simbol));
           } else {
-            arr.Add (JUtils.ValueOfString (JUtils.DecodeWord (content, ref index)));
+            // Decode word value WORD or W0r6 ...
+            var pIndex = index;
+            var val = JUtils.DecodeWord (content, ref index);
+            if (null == val || val.Length < 1) {
+              throw new ExceptionSyntaxError (line, simbol);
+            }
+            arr.Add (JUtils.ValueOfString (val));
+            simbol += index - pIndex;
           }
           comma = false;
         }
       }
-      return arr;
+      throw new ExceptionSyntaxError (line, simbol);
     }
 
     #endregion // Decode section

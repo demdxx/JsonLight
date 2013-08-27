@@ -90,8 +90,13 @@ namespace Example
         "t\":0,\"forks\":0,\"open_issues\":0,\"watchers\":0,\"master_branch\":\"mas" +
         "ter\",\"default_branch\":\"master\",\"network_count\":0\n}";
 
+      string bJson = "{id: 1,\nit: 2,\nr: 4,\nb: \"ddd}";
+
       JObject j = JObject.DecodeObject (json);
       Console.WriteLine ("JSON Encode: " + j.ToString ());
+
+      JObject b = JObject.DecodeObject (bJson);
+      Console.WriteLine ("JSON bad Encode: " + b.ToString ());
     }
   }
 }

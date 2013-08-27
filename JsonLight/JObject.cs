@@ -79,6 +79,7 @@ namespace JsonLight
       bool isValue = false;
       string key = "";
       index ++;
+      simbol ++;
 
       for (; index<content.Length; index++, simbol++) {
         char c = content [index];
@@ -86,12 +87,12 @@ namespace JsonLight
           if (colon) {
             throw new ExceptionSyntaxError (line, simbol);
           }
-          break;
+          return obj;
         }
         else if (' ' == c || '\n' == c || '\t' == c) {
           if ('\n' == c) {
             line++;
-            simbol = 0;
+            simbol = -1;
           }
           continue;
         } else if (!comma) {
@@ -107,28 +108,50 @@ namespace JsonLight
             colon = true;
           } else {
             if ('"' == c || '\'' == c) {
-              index++;
-              if (isValue) {
-                obj.Add (key, JString.ValueOf (JUtils.DecodeEscapeString (content, ref index, c)));
-              } else {
-                key = JUtils.DecodeEscapeString (content, ref index, c);
+              // Decode string value "String" or 'String'
+              try {
+                var pIndex = index;
+                index++;
+                if (isValue) {
+                  obj.Add (key, JString.ValueOf (JUtils.DecodeEscapeString (content, ref index, c)));
+                } else {
+                  key = JUtils.DecodeEscapeString (content, ref index, c);
+                  if (null == key || key.Length < 1) {
+                    throw new ExceptionSyntaxError (line, simbol);
+                  }
+                }
+                simbol += index - pIndex;
+              } catch (FormatException e) {
+                throw new ExceptionSyntaxError (line, simbol);
               }
             } else if ('[' == c) {
+              // Parse Array
               if (!isValue) {
                 throw new ExceptionSyntaxError (line, simbol);
               }
               obj.Add (key, JArray.DecodeArray (content, ref index, ref line, ref simbol));
             } else if ('{' == c) {
+              // Parse Dictionary
               if (!isValue) {
                 throw new ExceptionSyntaxError (line, simbol);
               }
               obj.Add (key, JObject.DecodeObject (content, ref index, ref line, ref simbol));
             } else {
+              // Decode word value WORD or W0r6 ...
+              var pIndex = index;
               if (isValue) {
-                obj.Add (key, JUtils.ValueOfString (JUtils.DecodeWord (content, ref index)));
+                var val = JUtils.DecodeWord (content, ref index);
+                if (null == val || val.Length < 1) {
+                  throw new ExceptionSyntaxError (line, simbol);
+                }
+                obj.Add (key, JUtils.ValueOfString (val));
               } else {
                 key = JUtils.DecodeWord (content, ref index);
+                if (null == key || key.Length < 1) {
+                  throw new ExceptionSyntaxError (line, simbol);
+                }
               }
+              simbol += index - pIndex;
             }
             if (isValue) {
               comma = false;
@@ -138,7 +161,7 @@ namespace JsonLight
           }
         }
       }
-      return obj;
+      throw new ExceptionSyntaxError (line, simbol);
     }
 
     #endregion // Decode section

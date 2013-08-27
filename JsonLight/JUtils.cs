@@ -55,14 +55,14 @@ namespace JsonLight
           if (esc) {
             result.Append ('\\');
           }
-          break;
+          return result.ToString ();
         } else if ('\\' == c) {
           esc = true;
         } else {
           result.Append (c);
         }
       }
-      return result.ToString ();
+      throw new FormatException ();
     }
 
     private static string endSimbols = " \n\t,:;'\"!@#$%^&*(){}[]=?/";
