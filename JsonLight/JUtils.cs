@@ -38,7 +38,7 @@ namespace JsonLight
         char c = content [index];
         if (esc) {
           esc = false;
-          if ('\\' == c || '\'' == c || '"' == c) {
+          if ('\\' == c || '\'' == c || '"' == c || '/' == c) {
             result.Append (c);
             continue;
           } else if ('n' == c) {

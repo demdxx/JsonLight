@@ -1,13 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="JsonLight/JObject.cs">
+    <Files>
+      <File FileName="JsonLight/JObject.cs" Line="124" Column="44" />
+      <File FileName="JsonLight/JArray.cs" Line="124" Column="7" />
+      <File FileName="Example/Program.cs" Line="93" Column="45" />
+      <File FileName="JsonLight/JUtils.cs" Line="65" Column="17" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Example" expanded="True">
-            <Node name="Program.cs" selected="True" />
+          <Node name="Example" expanded="True" />
+          <Node name="JsonLight" expanded="True">
+            <Node name="JObject.cs" selected="True" />
           </Node>
-          <Node name="JsonLight" expanded="True" />
         </State>
       </Pad>
       <Pad Id="ClassPad">

@@ -233,7 +233,18 @@ namespace JsonLight
       var result = new Dictionary<string, object> ();
       foreach (var p in this) {
         if (null != p.Value) {
-          result.Add (p.Key, p.Value.Value);
+          if (p.Value is JObject)
+          {
+            result.Add(p.Key, (p.Value as JObject).ToDictionary());
+          }
+          else if (p.Value is JArray)
+          {
+            result.Add(p.Key, (p.Value as JArray).ToArray());
+          }
+          else
+          {
+            result.Add (p.Key, p.Value.Value);
+          }
         }
       }
       return result;
