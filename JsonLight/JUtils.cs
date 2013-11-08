@@ -30,6 +30,15 @@ namespace JsonLight
 {
   public static class JUtils
   {
+    public static string DecodeEscapeUnicodeString(string content)
+    {
+      // Unescape unicode simbols
+      return System.Text.RegularExpressions.Regex.Replace(content,
+        @"\\[Uu]([0-9A-Fa-f]{4})",
+        m => char.ToString(
+          (char)ushort.Parse(m.Groups[1].Value, System.Globalization.NumberStyles.AllowHexSpecifier)));
+    }
+
     public static string DecodeEscapeString(string content, ref int index, char end)
     {
       StringBuilder result = new StringBuilder();
@@ -45,7 +54,10 @@ namespace JsonLight
             result.Append ('\n');
             continue;
           } else if ('t' == c) {
-            result.Append ('\t');
+            result.Append('\t');
+            continue;
+          } else if ('r' == c) {
+            result.Append('\r');
             continue;
           } else {
             result.Append ('\\');

@@ -187,7 +187,18 @@ namespace JsonLight
     {
       List<object> list = new List<object> ();
       foreach (var it in this) {
-        list.Add (it.Value);
+        if (it.Value is JObject)
+        {
+          list.Add((it.Value as JObject).ToDictionary());
+        }
+        else if (it.Value is JArray)
+        {
+          list.Add((it.Value as JArray).ToList());
+        }
+        else
+        {
+          list.Add(it.Value);
+        }
       }
       return list;
     }

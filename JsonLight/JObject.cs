@@ -239,7 +239,7 @@ namespace JsonLight
           }
           else if (p.Value is JArray)
           {
-            result.Add(p.Key, (p.Value as JArray).ToArray());
+            result.Add(p.Key, (p.Value as JArray).ToList());
           }
           else
           {

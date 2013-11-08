@@ -38,7 +38,7 @@ namespace JsonLight
 
     public JString (string val)
     {
-      _Value = val;
+      _Value = JUtils.DecodeEscapeUnicodeString (val);
     }
 
     #region Value of
