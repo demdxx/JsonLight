@@ -144,7 +144,11 @@ namespace JsonLight
                 if (null == val || val.Length < 1) {
                   throw new ExceptionSyntaxError (line, simbol);
                 }
-                obj.Add (key, JUtils.ValueOfString (val));
+                if ("null" == val) {
+                  obj.Add(key, null);
+                } else {
+                  obj.Add(key, JUtils.ValueOfString(val));
+                }
               } else {
                 key = JUtils.DecodeWord (content, ref index);
                 if (null == key || key.Length < 1) {

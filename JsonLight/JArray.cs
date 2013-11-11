@@ -115,7 +115,11 @@ namespace JsonLight
             if (null == val || val.Length < 1) {
               throw new ExceptionSyntaxError (line, simbol);
             }
-            arr.Add (JUtils.ValueOfString (val));
+            if ("null" == val) {
+              arr.Add (null);
+            } else {
+              arr.Add (JUtils.ValueOfString(val));
+            }
             simbol += index - pIndex;
           }
           comma = false;
