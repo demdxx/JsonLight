@@ -142,10 +142,22 @@ namespace JsonLight
       if (obj is IList<object>) {
         return JArray.ValueOf (obj as IList<object>);
       }
+      if (obj is IList<Dictionary<string, object>>) {
+        return JArray.ValueOf (ToObjectList (obj as IList<Dictionary<string, object>>));
+      }
       if (obj is IDictionary<string, object>) {
         return JObject.ValueOf (obj as IDictionary<string, object>);
       }
       return null;
+    }
+
+    public static List<object> ToObjectList(IList<Dictionary<string, object>> list)
+    {
+      var result = new List<object> ();
+      foreach (var v in list) {
+        result.Add (v);
+      }
+      return result;
     }
   }
 }
